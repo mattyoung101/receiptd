@@ -11,10 +11,10 @@
     width: 80mm,
     height: 297mm,
     margin: (
-        left: 5mm,
-        right: 5mm,
-        top: 5mm,
-        bottom: 5mm
+        left: 0mm,
+        right: 0mm,
+        top: 0mm,
+        bottom: 0mm
     )
 )
 #set par(justify: true)
@@ -23,22 +23,33 @@
 = BACKGROUND JOB \ COMPLETED
 ])
 
-#line(length: 100%)
+// #line(length: 100%)
+
+#image("separator.svg")
 
 #set text(size: 12pt)
-*JOB:* #sys.inputs.name
+*JOB: #sys.inputs.name*
 
-*TIME:* #sys.inputs.time
+*TIME: #sys.inputs.time*
 
-*STATUS:* #sys.inputs.status
+*STATUS: #sys.inputs.status*
 
-*LOG:*
-
-#raw(sys.inputs.log)
+// *LOG:*
+//
+// #raw(sys.inputs.log)
 
 #v(2em)
 
-#set text(size: 8pt)
-SERVED BY: MAINFRAME "#sys.inputs.hostname" ON _#sys.inputs.hostname\.LOCAL_
+#set text(size: 10pt)
+*SERVED BY:*
 
-(C) #datetime.today().year() CONTROL DATA CORPORATION
+*MAINFRAME "#sys.inputs.hostname" ON _#sys.inputs.hostname\.LOCAL_*
+
+(C) #datetime.today().year() DATA CONTROL CORPORATION
+
+
+#align(center, [
+    #image("norecycle.svg", width: 15%)
+
+    _CANNOT BE RECYCLED_
+])

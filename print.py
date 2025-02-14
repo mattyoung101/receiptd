@@ -11,7 +11,7 @@ from typing import Optional
 PRINTER = "EPSON"
 
 
-def do_print(name: str, status: str, log: str, hostname: Optional[str]):
+def do_print(name: str, status: str, log: str, hostname: Optional[str] = None):
     if status not in ["ok", "fail"]:
         raise RuntimeError(f"Invalid status: {status}. Acceptable: 'ok', 'fail'")
 
