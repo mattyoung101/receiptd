@@ -1,5 +1,5 @@
 from flask import Flask, request
-from print import do_print
+from print import print_job_receipt
 
 app = Flask(__name__)
 
@@ -9,7 +9,7 @@ def hello_world():
     return """
     <!doctype html>
     <head>
-    <title>receiptd print server></title>
+    <title>receiptd print server</title>
     <body style='font-family: sans-serif;'>
     <h1>receiptd print server running</h1>
     <p>(c) 2025 Matt Young - ISC licence</p>
@@ -25,7 +25,7 @@ def print():
     log = "none"
 
     try:
-        do_print(name, status, log, hostname)
+        print_job_receipt(name, status, log, hostname)
         return "OK"
     except Exception as e:
         print(f"Failed to print: {e}")

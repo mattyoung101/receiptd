@@ -11,7 +11,7 @@ from typing import Optional
 PRINTER = "EPSON"
 
 
-def do_print(name: str, status: str, log: str, hostname: Optional[str] = None):
+def print_job_receipt(name: str, status: str, log: str, hostname: Optional[str] = None):
     if status not in ["ok", "fail"]:
         raise RuntimeError(f"Invalid status: {status}. Acceptable: 'ok', 'fail'")
 
@@ -27,7 +27,31 @@ def do_print(name: str, status: str, log: str, hostname: Optional[str] = None):
     with tempfile.NamedTemporaryFile("wb", delete=False, prefix="receiptd_", suffix=".pdf") as f:
         command = (f"typst compile --input name=\"{name.upper()}\" --input "
                    f"status=\"{display_status}\" --input hostname=\"{hostname}\" --input time=\"{time}\" "
-                   f"--input log=\"{log.upper()}\" receipt.typ {f.name}")
+                   f"--input log=\"{log.upper()}\" receipt_job.typ {f.name}")
+        print(f"Writing to {f.name}")
+        print(f"Command: {command}")
+        print(f"Command split: {shlex.split(command)}")
+
+        # compile with typst
+        subprocess.check_call(shlex.split(command))
+
+        # now print it!
+        subprocess.check_call(["lpr", "-P", PRINTER, str(f.name)])
+
+
+def print_notification_receipt(title: str, message: str, hostname: Optional[str] = None):
+    if hostname is None:
+        hostname = socket.gethostname().upper()
+    else:
+        # ensure uppercase
+        hostname = hostname.upper()
+
+    time = datetime.now().strftime("%d/%m/%Y %I:%M %p").upper()
+
+    with tempfile.NamedTemporaryFile("wb", delete=False, prefix="receiptd_", suffix=".pdf") as f:
+        command = (f"typst compile --input message=\"{message.upper()}\" --input "
+                   f"title=\"{title.upper()}\" --input hostname=\"{hostname}\" --input time=\"{time}\" "
+                   f"receipt_notification.typ {f.name}")
         print(f"Writing to {f.name}")
         print(f"Command: {command}")
         print(f"Command split: {shlex.split(command)}")
@@ -46,4 +70,4 @@ if __name__ == "__main__":
     parser.add_argument("log", help="Log file of the job") # FIXME this should really be path to log
     args = parser.parse_args()
 
-    do_print(args.name, args.status, args.log)
+    print_job_receipt(args.name, args.status, args.log)
